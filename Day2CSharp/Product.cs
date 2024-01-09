@@ -10,7 +10,7 @@
 
         public Product()
         {
-            pCode = 1015;
+            pCode = 10105;
         }
         public Product(int pCode, string pName, int qtyInStock, float discountAllowed)
         {
