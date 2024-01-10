@@ -12,7 +12,7 @@ namespace Day2CSharp
         static void Main(string[] args)
         {
             bool condition = true;
-            bool condition1;
+            bool condition1,condition2;
 
 
             Product product = new Product();
@@ -46,10 +46,25 @@ namespace Day2CSharp
                         product.DisplayDetails();
                             break;
                         
-                    case (byte)UserType.Customer:
-                        Console.WriteLine("Enter Product Name to Purchase");
-                        string purchase=Console.ReadLine();
-                        product.Purchase(purchase);
+                    case (byte)UserType.Customer:                        
+                        product.Purchase();
+                        condition2=true;
+                        while (condition2)
+                        {
+                            Console.WriteLine("Do you want to purchase more items(y/n) ?");
+                            char ch = char.Parse(Console.ReadLine());
+                            switch (ch)
+                            {
+                                case 'y':
+                                    product.Purchase();
+                                    break;
+                                case 'n':
+                                    condition2 = false;
+                                    product.DisplayCart();
+                                    product.TotalAmount();
+                                    break;
+                            }
+                        }
                         break;
                     case (byte)UserType.End:condition=false;
                         break;

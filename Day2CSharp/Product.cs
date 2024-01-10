@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 
 namespace Day2CSharp
@@ -11,18 +12,21 @@ namespace Day2CSharp
         float discountAllowed;
         static string brand;
         double amount;
+        double bill;
         List<Product> products =new List<Product>();
+        List<Product> carts = new List<Product>();
         public Product()
         {
             pCode = 1;
         }
-        public Product(int pCode, string pName, int qtyInStock, float discountAllowed , double amount)
+        public Product(int pCode, string pName, int qtyInStock, float discountAllowed , double amount, double bill)
         {
             this.pCode = pCode;
             this.pName = pName;
             this.qtyInStock = qtyInStock;
             this.discountAllowed = discountAllowed;
             this.amount = amount;
+            this.bill = bill;
         }
 
         static Product ()
@@ -66,7 +70,7 @@ namespace Day2CSharp
                     Console.WriteLine(products[i].qtyInStock);
                     Console.WriteLine(products[i].discountAllowed);
                     Console.WriteLine(brand);
-                    Console.WriteLine(amount);
+                    Console.WriteLine(products[i].amount);
                 }
         }
 
@@ -78,43 +82,82 @@ namespace Day2CSharp
                 pName = pName,
                 qtyInStock = qtyInStock,
                 discountAllowed = discountAllowed,
-                amount=amount
+                amount=amount,
             });
 
         }
-        public void Purchase(string purchase) { 
+        public void Purchase() {
+            Console.WriteLine("Enter Product Name to Purchase");
+            string purchase = Console.ReadLine();
             var list = products.Where(x => x.pName == purchase).ToList();
-            if (list.Count > 0)
+            if (list.Count == 1)
             {
                 foreach (var product in list)
                 {
                     Console.WriteLine("Product details-->");
-                    Console.WriteLine(pCode);
-                    Console.WriteLine(qtyInStock);
-                    Console.WriteLine(discountAllowed);
+                    Console.WriteLine(product.pCode);
+                    Console.WriteLine(product.qtyInStock);
+                    Console.WriteLine(product.discountAllowed);
                     Console.WriteLine(brand);
-                    Console.WriteLine(amount);
+                    Console.WriteLine(product.amount);
+                    
+                    int month = DateTime.Now.Month;
+                    int day = DateTime.Now.Day;
+                    if (month == 01 && day == 26)
+                    {
+                        product.bill = product.amount - ((product.amount * 50) / 100);
+                        Console.WriteLine("As today is 26th Jan, Company wants to give a discount of 50% on all the products");
+                        Console.WriteLine("The bill is " + product.bill);
+                    }//if
+                    else
+                    {
+                        product.bill = product.amount - ((product.amount * product.discountAllowed) / 100);
+                        Console.WriteLine("The bill is " + product.bill);
+                    }//else
+                    AddToCart(product.pCode, product.pName, product.qtyInStock, product.discountAllowed, product.amount, product.bill);
                 }//foreach
             }//if
             else
             {
                 Console.WriteLine("Product does not exist.");
             }//else
-            int month= DateTime.Now.Month;
-            int day= DateTime.Now.Day;
-            if (month == 01 && day == 26)
-            {
-                double totalAmount = amount - ((amount * 50) / 100);
-                Console.WriteLine("As today is 26th Jan, Company wants to give a discount of 50% on all the products");
-                Console.WriteLine("The bill is "+totalAmount);
-            }//if
-            else
-            {
-                double totalAmount = amount-((amount * discountAllowed) / 100);
-                Console.WriteLine("The bill is " + totalAmount);
-            }//else
+            
         }//purchase
+        public void AddToCart(int pCode, string pName, int qtyInStock, float discountAllowed, double amount, double bill)
+        {
+            carts.Add(new Product
+            {
+                pCode = pCode,
+                pName = pName,
+                qtyInStock = qtyInStock,
+                discountAllowed = discountAllowed,
+                amount = amount,
+                bill = bill
+            });
+        }
+        public void DisplayCart()
+        {
+            for (var i = 0; i < carts.Count; i++)
+            {
+                Console.WriteLine(carts[i].pCode);
+                Console.WriteLine(carts[i].pName);
+                Console.WriteLine(carts[i].qtyInStock);
+                Console.WriteLine(carts[i].discountAllowed);
+                Console.WriteLine(brand);
+                Console.WriteLine(carts[i].amount);
+                Console.WriteLine(carts[i].bill);
+            }
 
+        }
+        public void TotalAmount()
+        {
+            double sum=0.0;
+            for (var i = 0; i < carts.Count; i++)
+            {
+                sum += carts[i].bill;
+            }
+            Console.WriteLine("Total amount to be paid is" + sum);
+        }
             
         }//class
     }//namespace
