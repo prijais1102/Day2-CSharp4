@@ -100,10 +100,9 @@ namespace Day2CSharp
                     Console.WriteLine(product.discountAllowed);
                     Console.WriteLine(brand);
                     Console.WriteLine(product.amount);
-                    
-                    int month = DateTime.Now.Month;
-                    int day = DateTime.Now.Day;
-                    if (month == 01 && day == 26)
+
+                    string offer = DateTime.Now.ToString("MMMM dd");
+                    if (offer.Equals("January 26"))
                     {
                         product.bill = product.amount - ((product.amount * 50) / 100);
                         Console.WriteLine("As today is 26th Jan, Company wants to give a discount of 50% on all the products");
